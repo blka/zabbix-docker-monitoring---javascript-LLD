@@ -1,0 +1,914 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zabbix_export>
+    <version>4.4</version>
+    <date>2019-11-29T14:28:16Z</date>
+    <groups>
+        <group>
+            <name>Templates/Docker</name>
+        </group>
+    </groups>
+    <templates>
+        <template>
+            <template>Template Yggdrasil Docker</template>
+            <name>Template Yggdrasil Docker</name>
+            <description>// full JavaScript Docker Template by blka</description>
+            <groups>
+                <group>
+                    <name>Templates/Docker</name>
+                </group>
+            </groups>
+            <applications>
+                <application>
+                    <name>docker</name>
+                </application>
+                <application>
+                    <name>DockerCPU</name>
+                </application>
+                <application>
+                    <name>DockerInfo</name>
+                </application>
+                <application>
+                    <name>DockerMasterItem</name>
+                </application>
+                <application>
+                    <name>DockerMemory</name>
+                </application>
+                <application>
+                    <name>DockerMonitor</name>
+                </application>
+                <application>
+                    <name>DockerNetwork</name>
+                </application>
+                <application>
+                    <name>DockerRawItems</name>
+                </application>
+                <application>
+                    <name>DockerSwarm</name>
+                </application>
+            </applications>
+            <items>
+                <item>
+                    <name>Count docker Containers</name>
+                    <type>DEPENDENT</type>
+                    <key>docker.count</key>
+                    <delay>0</delay>
+                    <applications>
+                        <application>
+                            <name>docker</name>
+                        </application>
+                        <application>
+                            <name>DockerInfo</name>
+                        </application>
+                    </applications>
+                    <preprocessing>
+                        <step>
+                            <type>REGEX</type>
+                            <params>Containers: (\d+)
+\1</params>
+                        </step>
+                    </preprocessing>
+                    <master_item>
+                        <key>system.run[docker info]</key>
+                    </master_item>
+                </item>
+                <item>
+                    <name>Count Paused docker Containers</name>
+                    <type>DEPENDENT</type>
+                    <key>docker.count.paused</key>
+                    <delay>0</delay>
+                    <applications>
+                        <application>
+                            <name>docker</name>
+                        </application>
+                        <application>
+                            <name>DockerInfo</name>
+                        </application>
+                    </applications>
+                    <preprocessing>
+                        <step>
+                            <type>REGEX</type>
+                            <params>Paused: (\d+)
+\1</params>
+                        </step>
+                    </preprocessing>
+                    <master_item>
+                        <key>system.run[docker info]</key>
+                    </master_item>
+                </item>
+                <item>
+                    <name>Count Running docker Containers</name>
+                    <type>DEPENDENT</type>
+                    <key>docker.count.running</key>
+                    <delay>0</delay>
+                    <applications>
+                        <application>
+                            <name>docker</name>
+                        </application>
+                        <application>
+                            <name>DockerInfo</name>
+                        </application>
+                    </applications>
+                    <preprocessing>
+                        <step>
+                            <type>REGEX</type>
+                            <params>Running: (\d+)
+\1</params>
+                        </step>
+                    </preprocessing>
+                    <master_item>
+                        <key>system.run[docker info]</key>
+                    </master_item>
+                </item>
+                <item>
+                    <name>Count Stopped docker Containers</name>
+                    <type>DEPENDENT</type>
+                    <key>docker.count.stopped</key>
+                    <delay>0</delay>
+                    <applications>
+                        <application>
+                            <name>docker</name>
+                        </application>
+                        <application>
+                            <name>DockerInfo</name>
+                        </application>
+                    </applications>
+                    <preprocessing>
+                        <step>
+                            <type>REGEX</type>
+                            <params>Stopped: (\d+)
+\1</params>
+                        </step>
+                    </preprocessing>
+                    <master_item>
+                        <key>system.run[docker info]</key>
+                    </master_item>
+                </item>
+                <item>
+                    <name>Count docker Images</name>
+                    <type>DEPENDENT</type>
+                    <key>docker.images.count</key>
+                    <delay>0</delay>
+                    <applications>
+                        <application>
+                            <name>docker</name>
+                        </application>
+                        <application>
+                            <name>DockerInfo</name>
+                        </application>
+                    </applications>
+                    <preprocessing>
+                        <step>
+                            <type>REGEX</type>
+                            <params>Images: (\d+)
+\1</params>
+                        </step>
+                    </preprocessing>
+                    <master_item>
+                        <key>system.run[docker info]</key>
+                    </master_item>
+                </item>
+                <item>
+                    <name>Count docker Manager Nodes</name>
+                    <type>DEPENDENT</type>
+                    <key>docker.managernodes.count</key>
+                    <delay>0</delay>
+                    <applications>
+                        <application>
+                            <name>docker</name>
+                        </application>
+                        <application>
+                            <name>DockerInfo</name>
+                        </application>
+                    </applications>
+                    <preprocessing>
+                        <step>
+                            <type>REGEX</type>
+                            <params>Managers: (\d+)
+\1</params>
+                        </step>
+                        <step>
+                            <type>DISCARD_UNCHANGED</type>
+                            <params/>
+                        </step>
+                    </preprocessing>
+                    <master_item>
+                        <key>system.run[docker info]</key>
+                    </master_item>
+                    <triggers>
+                        <trigger>
+                            <expression>{diff()}=1</expression>
+                            <name>Number of Manager Nodes has changed</name>
+                            <opdata>Current: {ITEM.LASTVALUE1}</opdata>
+                            <priority>HIGH</priority>
+                            <description>seems like count of available manager nodes has changed, check swarm state!</description>
+                            <manual_close>YES</manual_close>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <name>Count docker Nodes</name>
+                    <type>DEPENDENT</type>
+                    <key>docker.nodes.count</key>
+                    <delay>0</delay>
+                    <applications>
+                        <application>
+                            <name>docker</name>
+                        </application>
+                        <application>
+                            <name>DockerInfo</name>
+                        </application>
+                    </applications>
+                    <preprocessing>
+                        <step>
+                            <type>REGEX</type>
+                            <params>Nodes: (\d+)
+\1</params>
+                        </step>
+                        <step>
+                            <type>DISCARD_UNCHANGED</type>
+                            <params/>
+                        </step>
+                    </preprocessing>
+                    <master_item>
+                        <key>system.run[docker info]</key>
+                    </master_item>
+                    <triggers>
+                        <trigger>
+                            <expression>{diff()}=1</expression>
+                            <name>Number of Nodes has changed</name>
+                            <opdata>Current: {ITEM.LASTVALUE1}</opdata>
+                            <priority>HIGH</priority>
+                            <description>seems like count of available slave nodes has changed, check swarm state!</description>
+                            <manual_close>YES</manual_close>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <name>Docker Storage Driver</name>
+                    <type>DEPENDENT</type>
+                    <key>docker.storage.driver</key>
+                    <delay>0</delay>
+                    <trends>0</trends>
+                    <value_type>CHAR</value_type>
+                    <applications>
+                        <application>
+                            <name>docker</name>
+                        </application>
+                        <application>
+                            <name>DockerInfo</name>
+                        </application>
+                    </applications>
+                    <preprocessing>
+                        <step>
+                            <type>REGEX</type>
+                            <params> Storage Driver: (\w+)
+\1</params>
+                        </step>
+                        <step>
+                            <type>DISCARD_UNCHANGED</type>
+                            <params/>
+                        </step>
+                    </preprocessing>
+                    <master_item>
+                        <key>system.run[docker info]</key>
+                    </master_item>
+                </item>
+                <item>
+                    <name>Docker Swarm IfManager</name>
+                    <type>DEPENDENT</type>
+                    <key>docker.swarm.ifmanager</key>
+                    <delay>0</delay>
+                    <trends>0</trends>
+                    <value_type>CHAR</value_type>
+                    <applications>
+                        <application>
+                            <name>docker</name>
+                        </application>
+                        <application>
+                            <name>DockerInfo</name>
+                        </application>
+                    </applications>
+                    <preprocessing>
+                        <step>
+                            <type>REGEX</type>
+                            <params>Is Manager: (\w+)
+\1</params>
+                        </step>
+                        <step>
+                            <type>DISCARD_UNCHANGED</type>
+                            <params/>
+                        </step>
+                    </preprocessing>
+                    <master_item>
+                        <key>system.run[docker info]</key>
+                    </master_item>
+                </item>
+                <item>
+                    <name>Docker Swarm status</name>
+                    <type>DEPENDENT</type>
+                    <key>docker.swarm.status</key>
+                    <delay>0</delay>
+                    <trends>0</trends>
+                    <value_type>CHAR</value_type>
+                    <applications>
+                        <application>
+                            <name>docker</name>
+                        </application>
+                        <application>
+                            <name>DockerInfo</name>
+                        </application>
+                    </applications>
+                    <preprocessing>
+                        <step>
+                            <type>REGEX</type>
+                            <params>Swarm: (\w+)
+\1</params>
+                        </step>
+                        <step>
+                            <type>DISCARD_UNCHANGED</type>
+                            <params/>
+                        </step>
+                    </preprocessing>
+                    <master_item>
+                        <key>system.run[docker info]</key>
+                    </master_item>
+                </item>
+                <item>
+                    <name>Docker Version</name>
+                    <type>DEPENDENT</type>
+                    <key>docker.version</key>
+                    <delay>0</delay>
+                    <trends>0</trends>
+                    <value_type>CHAR</value_type>
+                    <applications>
+                        <application>
+                            <name>docker</name>
+                        </application>
+                        <application>
+                            <name>DockerInfo</name>
+                        </application>
+                    </applications>
+                    <preprocessing>
+                        <step>
+                            <type>REGEX</type>
+                            <params>Server Version: (\d.+)
+\1</params>
+                        </step>
+                        <step>
+                            <type>DISCARD_UNCHANGED</type>
+                            <params/>
+                        </step>
+                    </preprocessing>
+                    <master_item>
+                        <key>system.run[docker info]</key>
+                    </master_item>
+                </item>
+                <item>
+                    <name>Check if docker node is accepting connections</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>net.tcp.port[{HOST.HOST},7946]</key>
+                    <delay>2m</delay>
+                    <applications>
+                        <application>
+                            <name>docker</name>
+                        </application>
+                        <application>
+                            <name>DockerMonitor</name>
+                        </application>
+                        <application>
+                            <name>DockerSwarm</name>
+                        </application>
+                    </applications>
+                    <triggers>
+                        <trigger>
+                            <expression>{last(#2)}=0</expression>
+                            <name>External check of docker port failed</name>
+                            <priority>AVERAGE</priority>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <name>get docker info</name>
+                    <key>system.run[docker info]</key>
+                    <delay>1h</delay>
+                    <history>1h</history>
+                    <trends>0</trends>
+                    <value_type>TEXT</value_type>
+                    <applications>
+                        <application>
+                            <name>docker</name>
+                        </application>
+                        <application>
+                            <name>DockerRawItems</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>get running dockers</name>
+                    <key>system.run[docker stats --no-stream --format &quot;'CID':'{{ .Container }}' 'CNAME':'{{ .Name}}' 'MEM':'{{ .MemUsage }}' 'MEMPERC':'{{ .MemPerc }}' 'CPU':'{{ .CPUPerc }}' 'NetIO':'{{ .NetIO}}' 'Blockio':'{{ .BlockIO}}' 'PID':'{{ .PIDs}}'&quot;]</key>
+                    <history>1h</history>
+                    <trends>0</trends>
+                    <value_type>TEXT</value_type>
+                    <applications>
+                        <application>
+                            <name>docker</name>
+                        </application>
+                        <application>
+                            <name>DockerRawItems</name>
+                        </application>
+                    </applications>
+                </item>
+            </items>
+            <discovery_rules>
+                <discovery_rule>
+                    <name>discover dockers</name>
+                    <key>system.run[docker stats --no-stream --format '{{ .Container }} {{ .Name}}' ]</key>
+                    <lifetime>1w</lifetime>
+                    <item_prototypes>
+                        <item_prototype>
+                            <name>Container BLOCKIO INPUT  {#CNAME}</name>
+                            <type>DEPENDENT</type>
+                            <key>docker.instance[{#CNAME},blockin]</key>
+                            <delay>0</delay>
+                            <units>b</units>
+                            <applications>
+                                <application>
+                                    <name>docker</name>
+                                </application>
+                                <application>
+                                    <name>DockerMonitor</name>
+                                </application>
+                            </applications>
+                            <preprocessing>
+                                <step>
+                                    <type>REGEX</type>
+                                    <params>'CID':'{#CID}' 'CNAME':'{#CNAME}' .* 'Blockio':'(.*) \/ (.*)'
+\1</params>
+                                </step>
+                                <step>
+                                    <type>JAVASCRIPT</type>
+                                    <params>// map traffic to bytes
+
+if(value.includes(&quot;kB&quot;)){
+  var netio = value.replace('kB','');
+  var output = netio * 1024
+  return Math.round(output)
+}
+else  if(value.includes(&quot;MB&quot;)){
+  var netio = value.replace('MB','');
+  var output = netio * 1048576
+  return Math.round(output)
+}
+else if(value.includes(&quot;GB&quot;)){
+  var netio = value.replace('GB','');
+  var output = netio * 1073741824
+  return Math.round(output)
+}
+else if(value.includes(&quot;0B&quot;)){
+  var netio = value.replace('B','');
+  var output = netio
+  return Math.round(output)
+}
+</params>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>system.run[docker stats --no-stream --format &quot;'CID':'{{ .Container }}' 'CNAME':'{{ .Name}}' 'MEM':'{{ .MemUsage }}' 'MEMPERC':'{{ .MemPerc }}' 'CPU':'{{ .CPUPerc }}' 'NetIO':'{{ .NetIO}}' 'Blockio':'{{ .BlockIO}}' 'PID':'{{ .PIDs}}'&quot;]</key>
+                            </master_item>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Container BLOCKIO OUPUT  {#CNAME}</name>
+                            <type>DEPENDENT</type>
+                            <key>docker.instance[{#CNAME},blockout]</key>
+                            <delay>0</delay>
+                            <units>b</units>
+                            <applications>
+                                <application>
+                                    <name>docker</name>
+                                </application>
+                                <application>
+                                    <name>DockerMonitor</name>
+                                </application>
+                            </applications>
+                            <preprocessing>
+                                <step>
+                                    <type>REGEX</type>
+                                    <params>'CID':'{#CID}' 'CNAME':'{#CNAME}' .* 'Blockio':'(.*) \/ (.*)' 'PID'
+\2</params>
+                                </step>
+                                <step>
+                                    <type>JAVASCRIPT</type>
+                                    <params>// map traffic to bytes
+
+if(value.includes(&quot;kB&quot;)){
+  var netio = value.replace('kB','');
+  var output = netio * 1024
+  return Math.round(output)
+}
+else  if(value.includes(&quot;MB&quot;)){
+  var netio = value.replace('MB','');
+  var output = netio * 1048576
+  return Math.round(output)
+}
+else if(value.includes(&quot;GB&quot;)){
+  var netio = value.replace('GB','');
+  var output = netio * 1073741824
+  return Math.round(output)
+}
+else if(value.includes(&quot;0B&quot;)){
+  var netio = value.replace('B','');
+  var output = netio
+  return Math.round(output)
+}
+</params>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>system.run[docker stats --no-stream --format &quot;'CID':'{{ .Container }}' 'CNAME':'{{ .Name}}' 'MEM':'{{ .MemUsage }}' 'MEMPERC':'{{ .MemPerc }}' 'CPU':'{{ .CPUPerc }}' 'NetIO':'{{ .NetIO}}' 'Blockio':'{{ .BlockIO}}' 'PID':'{{ .PIDs}}'&quot;]</key>
+                            </master_item>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Container CPU used {#CNAME} %</name>
+                            <type>DEPENDENT</type>
+                            <key>docker.instance[{#CNAME},cpu_used_perc]</key>
+                            <delay>0</delay>
+                            <units>%</units>
+                            <applications>
+                                <application>
+                                    <name>docker</name>
+                                </application>
+                                <application>
+                                    <name>DockerCPU</name>
+                                </application>
+                            </applications>
+                            <preprocessing>
+                                <step>
+                                    <type>REGEX</type>
+                                    <params>'CID':'{#CID}' 'CNAME':'{#CNAME}' .* 'CPU':'(.*)' 'NetIO
+\1</params>
+                                </step>
+                                <step>
+                                    <type>JAVASCRIPT</type>
+                                    <params>// round CPU usage
+
+if(value.includes(&quot;%&quot;)){
+  var output = value.replace('%','');
+  return Math.round(output)
+}
+</params>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>system.run[docker stats --no-stream --format &quot;'CID':'{{ .Container }}' 'CNAME':'{{ .Name}}' 'MEM':'{{ .MemUsage }}' 'MEMPERC':'{{ .MemPerc }}' 'CPU':'{{ .CPUPerc }}' 'NetIO':'{{ .NetIO}}' 'Blockio':'{{ .BlockIO}}' 'PID':'{{ .PIDs}}'&quot;]</key>
+                            </master_item>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Container Memory max {#CNAME}</name>
+                            <type>DEPENDENT</type>
+                            <key>docker.instance[{#CNAME},mem_max]</key>
+                            <delay>0</delay>
+                            <units>B</units>
+                            <applications>
+                                <application>
+                                    <name>docker</name>
+                                </application>
+                                <application>
+                                    <name>DockerMemory</name>
+                                </application>
+                            </applications>
+                            <preprocessing>
+                                <step>
+                                    <type>REGEX</type>
+                                    <params>'CID':'{#CID}' 'CNAME':'{#CNAME}' 'MEM':'(.*) \/ (.*)' 'MEMPERC':'(.*)' 'CPU'
+\2</params>
+                                </step>
+                                <step>
+                                    <type>JAVASCRIPT</type>
+                                    <params>// map memory to bytes
+
+if(value.includes(&quot;kB&quot;)){
+  var mem = value.replace('kB','');
+  var output = mem * 1024
+  return Math.round(output)
+}
+else  if(value.includes(&quot;MiB&quot;)){
+  var mem = value.replace('MiB','');
+  var output = mem * 1048576
+  return Math.round(output)
+}
+else if(value.includes(&quot;GiB&quot;)){
+  var mem = value.replace('GiB','');
+  var output = mem * 1073741824
+  return Math.round(output)
+}</params>
+                                </step>
+                                <step>
+                                    <type>DISCARD_UNCHANGED</type>
+                                    <params/>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>system.run[docker stats --no-stream --format &quot;'CID':'{{ .Container }}' 'CNAME':'{{ .Name}}' 'MEM':'{{ .MemUsage }}' 'MEMPERC':'{{ .MemPerc }}' 'CPU':'{{ .CPUPerc }}' 'NetIO':'{{ .NetIO}}' 'Blockio':'{{ .BlockIO}}' 'PID':'{{ .PIDs}}'&quot;]</key>
+                            </master_item>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Container Memory used {#CNAME}</name>
+                            <type>DEPENDENT</type>
+                            <key>docker.instance[{#CNAME},mem_used]</key>
+                            <delay>0</delay>
+                            <units>B</units>
+                            <applications>
+                                <application>
+                                    <name>docker</name>
+                                </application>
+                                <application>
+                                    <name>DockerMemory</name>
+                                </application>
+                            </applications>
+                            <preprocessing>
+                                <step>
+                                    <type>REGEX</type>
+                                    <params>'CID':'{#CID}' 'CNAME':'{#CNAME}' 'MEM':'(.*) \/ (.*)' 'MEMPERC':'(.*)' 'CPU'
+\1</params>
+                                </step>
+                                <step>
+                                    <type>JAVASCRIPT</type>
+                                    <params>// map memory to bytes
+
+if(value.includes(&quot;kB&quot;)){
+  var mem = value.replace('kB','');
+  var output = mem * 1024
+  return Math.round(output)
+}
+else  if(value.includes(&quot;MiB&quot;)){
+  var mem = value.replace('MiB','');
+  var output = mem * 1048576
+  return Math.round(output)
+}
+else if(value.includes(&quot;GiB&quot;)){
+  var mem = value.replace('GiB','');
+  var output = mem * 1073741824
+  return Math.round(output)
+}</params>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>system.run[docker stats --no-stream --format &quot;'CID':'{{ .Container }}' 'CNAME':'{{ .Name}}' 'MEM':'{{ .MemUsage }}' 'MEMPERC':'{{ .MemPerc }}' 'CPU':'{{ .CPUPerc }}' 'NetIO':'{{ .NetIO}}' 'Blockio':'{{ .BlockIO}}' 'PID':'{{ .PIDs}}'&quot;]</key>
+                            </master_item>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Container Memory used {#CNAME} %</name>
+                            <type>DEPENDENT</type>
+                            <key>docker.instance[{#CNAME},mem_used_perc]</key>
+                            <delay>0</delay>
+                            <units>%</units>
+                            <applications>
+                                <application>
+                                    <name>docker</name>
+                                </application>
+                                <application>
+                                    <name>DockerMemory</name>
+                                </application>
+                            </applications>
+                            <preprocessing>
+                                <step>
+                                    <type>REGEX</type>
+                                    <params>'CID':'{#CID}' 'CNAME':'{#CNAME}' 'MEM':'(.*) \/ (.*)' 'MEMPERC':'(.*)' 'CPU'
+\3</params>
+                                </step>
+                                <step>
+                                    <type>JAVASCRIPT</type>
+                                    <params>// round memory
+
+if(value.includes(&quot;%&quot;)){
+  var output = value.replace('%','');
+  return Math.round(output)
+}
+</params>
+                                </step>
+                                <step>
+                                    <type>DISCARD_UNCHANGED</type>
+                                    <params/>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>system.run[docker stats --no-stream --format &quot;'CID':'{{ .Container }}' 'CNAME':'{{ .Name}}' 'MEM':'{{ .MemUsage }}' 'MEMPERC':'{{ .MemPerc }}' 'CPU':'{{ .CPUPerc }}' 'NetIO':'{{ .NetIO}}' 'Blockio':'{{ .BlockIO}}' 'PID':'{{ .PIDs}}'&quot;]</key>
+                            </master_item>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <expression>{avg(3m)}&gt;90</expression>
+                                    <name>Memory utilization over 90%   {#CNAME}</name>
+                                    <priority>AVERAGE</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Container Received traffic {#CNAME}</name>
+                            <type>DEPENDENT</type>
+                            <key>docker.instance[{#CNAME},netin]</key>
+                            <delay>0</delay>
+                            <units>bps</units>
+                            <applications>
+                                <application>
+                                    <name>docker</name>
+                                </application>
+                                <application>
+                                    <name>DockerNetwork</name>
+                                </application>
+                            </applications>
+                            <preprocessing>
+                                <step>
+                                    <type>REGEX</type>
+                                    <params>'CID':'{#CID}' 'CNAME':'{#CNAME}' .* 'NetIO':'(.*) \/ (.*)' 'Blockio'
+\1</params>
+                                </step>
+                                <step>
+                                    <type>JAVASCRIPT</type>
+                                    <params>// map traffic to bytes
+
+if(value.includes(&quot;kB&quot;)){
+  var netio = value.replace('kB','');
+  var output = netio * 1024
+  return Math.round(output)
+}
+else  if(value.includes(&quot;MB&quot;)){
+  var netio = value.replace('MB','');
+  var output = netio * 1048576
+  return Math.round(output)
+}
+else if(value.includes(&quot;GB&quot;)){
+  var netio = value.replace('GB','');
+  var output = netio * 1073741824
+  return Math.round(output)
+}
+else if(value.includes(&quot;0B&quot;)){
+  var netio = value.replace('B','');
+  var output = netio
+  return Math.round(output)
+}
+</params>
+                                </step>
+                                <step>
+                                    <type>CHANGE_PER_SECOND</type>
+                                    <params/>
+                                </step>
+                                <step>
+                                    <type>MULTIPLIER</type>
+                                    <params>8</params>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>system.run[docker stats --no-stream --format &quot;'CID':'{{ .Container }}' 'CNAME':'{{ .Name}}' 'MEM':'{{ .MemUsage }}' 'MEMPERC':'{{ .MemPerc }}' 'CPU':'{{ .CPUPerc }}' 'NetIO':'{{ .NetIO}}' 'Blockio':'{{ .BlockIO}}' 'PID':'{{ .PIDs}}'&quot;]</key>
+                            </master_item>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Container Sent traffic {#CNAME}</name>
+                            <type>DEPENDENT</type>
+                            <key>docker.instance[{#CNAME},netout]</key>
+                            <delay>0</delay>
+                            <units>bps</units>
+                            <applications>
+                                <application>
+                                    <name>docker</name>
+                                </application>
+                                <application>
+                                    <name>DockerNetwork</name>
+                                </application>
+                            </applications>
+                            <preprocessing>
+                                <step>
+                                    <type>REGEX</type>
+                                    <params>'CID':'{#CID}' 'CNAME':'{#CNAME}' .* 'NetIO':'(.*) \/ (.*)' 'Blockio'
+\2</params>
+                                </step>
+                                <step>
+                                    <type>JAVASCRIPT</type>
+                                    <params>// map traffic to bytes
+
+if(value.includes(&quot;kB&quot;)){
+  var netio = value.replace('kB','');
+  var output = netio * 1024
+  return Math.round(output)
+}
+else  if(value.includes(&quot;MB&quot;)){
+  var netio = value.replace('MB','');
+  var output = netio * 1048576
+  return Math.round(output)
+}
+else if(value.includes(&quot;GB&quot;)){
+  var netio = value.replace('GB','');
+  var output = netio * 1073741824
+  return Math.round(output)
+}
+else if(value.includes(&quot;0B&quot;)){
+  var netio = value.replace('B','');
+  var output = netio
+  return Math.round(output)
+}
+</params>
+                                </step>
+                                <step>
+                                    <type>CHANGE_PER_SECOND</type>
+                                    <params/>
+                                </step>
+                                <step>
+                                    <type>MULTIPLIER</type>
+                                    <params>8</params>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>system.run[docker stats --no-stream --format &quot;'CID':'{{ .Container }}' 'CNAME':'{{ .Name}}' 'MEM':'{{ .MemUsage }}' 'MEMPERC':'{{ .MemPerc }}' 'CPU':'{{ .CPUPerc }}' 'NetIO':'{{ .NetIO}}' 'Blockio':'{{ .BlockIO}}' 'PID':'{{ .PIDs}}'&quot;]</key>
+                            </master_item>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Container PID {#CNAME}</name>
+                            <type>DEPENDENT</type>
+                            <key>docker.instance[{#CNAME},pid]</key>
+                            <delay>0</delay>
+                            <applications>
+                                <application>
+                                    <name>docker</name>
+                                </application>
+                                <application>
+                                    <name>DockerMonitor</name>
+                                </application>
+                            </applications>
+                            <preprocessing>
+                                <step>
+                                    <type>REGEX</type>
+                                    <params>'CID':'{#CID}' 'CNAME':'{#CNAME}'.*'PID':'(.*)'
+\1</params>
+                                </step>
+                                <step>
+                                    <type>DISCARD_UNCHANGED</type>
+                                    <params/>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>system.run[docker stats --no-stream --format &quot;'CID':'{{ .Container }}' 'CNAME':'{{ .Name}}' 'MEM':'{{ .MemUsage }}' 'MEMPERC':'{{ .MemPerc }}' 'CPU':'{{ .CPUPerc }}' 'NetIO':'{{ .NetIO}}' 'Blockio':'{{ .BlockIO}}' 'PID':'{{ .PIDs}}'&quot;]</key>
+                            </master_item>
+                        </item_prototype>
+                    </item_prototypes>
+                    <graph_prototypes>
+                        <graph_prototype>
+                            <name>Container Memory {#CNAME}</name>
+                            <graph_items>
+                                <graph_item>
+                                    <color>C62828</color>
+                                    <item>
+                                        <host>Template Yggdrasil Docker</host>
+                                        <key>docker.instance[{#CNAME},mem_max]</key>
+                                    </item>
+                                </graph_item>
+                                <graph_item>
+                                    <sortorder>1</sortorder>
+                                    <color>4CAF50</color>
+                                    <item>
+                                        <host>Template Yggdrasil Docker</host>
+                                        <key>docker.instance[{#CNAME},mem_used]</key>
+                                    </item>
+                                </graph_item>
+                            </graph_items>
+                        </graph_prototype>
+                        <graph_prototype>
+                            <name>Container network  {#CNAME}</name>
+                            <percent_left>95.0000</percent_left>
+                            <ymin_type_1>FIXED</ymin_type_1>
+                            <graph_items>
+                                <graph_item>
+                                    <drawtype>GRADIENT_LINE</drawtype>
+                                    <color>199C0D</color>
+                                    <item>
+                                        <host>Template Yggdrasil Docker</host>
+                                        <key>docker.instance[{#CNAME},netin]</key>
+                                    </item>
+                                </graph_item>
+                                <graph_item>
+                                    <sortorder>1</sortorder>
+                                    <drawtype>GRADIENT_LINE</drawtype>
+                                    <color>F63100</color>
+                                    <item>
+                                        <host>Template Yggdrasil Docker</host>
+                                        <key>docker.instance[{#CNAME},netout]</key>
+                                    </item>
+                                </graph_item>
+                            </graph_items>
+                        </graph_prototype>
+                    </graph_prototypes>
+                    <preprocessing>
+                        <step>
+                            <type>JAVASCRIPT</type>
+                            <params>var output = [];
+var lines = value.split(&quot;\n&quot;);
+for(var i = 0; i &lt; lines.length; i++){
+    var splited = lines[i].split(&quot; &quot;);
+    output.push({&quot;{#CID}&quot; : splited[0], &quot;{#CNAME}&quot; : splited[1]});
+}
+return JSON.stringify(output);</params>
+                        </step>
+                    </preprocessing>
+                </discovery_rule>
+            </discovery_rules>
+        </template>
+    </templates>
+</zabbix_export>
